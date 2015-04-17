@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block pagetitle %}Lista Zakupów{% endblock %}
+
+{% block title %}Dodaj element do listy{% endblock %}
+
+{% block primary %}
+{% if info_message %}<p><strong>{{ info_message }}</strong></p>{% endif %}
+<script src="//code.jquery.com/jquery-2.1.1.js"></script>
+
+
+<form action="{% url 'buylist_add_elements' list.id %}" method="post">
+	{% csrf_token %}
+	Wybierz typ: <select  id="elementtype_id" name="elementtype_id" >
+		{% for t in elementtypes_list %}
+    		<option value="{{ t.id }}">{{ t.name }}</option>
+		{% endfor %}
+	</select>
+	<br/>
+	Wybierz element:
+	<select  id="element_id" name="element_id" >
+		<script>
+			$( "#elementtype_id" ).change(function() {
+					$('#element_id').empty()
+					$.getJSON( "/manager/get_element_list_by_type/"+$( "#elementtype_id" ).val()+"", function( data ) {
+						var items = [];
+						$.each( data, function( key, val ) {
+							$("#element_id").append("<option value='" + val + "'>" + key + "</option>");
+							//items.push( "<option value='" + val + "'>" + key + "</option>" );
+
+						});
+						$({	html: items.join( "" )}).appendTo( "body" );
+					});
+			});
+		</script>
+	</select>
+	<br/>
+	Ilość: <input type="text" name="quantity" id="quantity{{ t.id }}" value="1" />
+	<br/>
+	Jednostka:
+	<select  id="jednostka" name="jednostka">
+		{% for t in jednostki %}
+			<option value="{{ t.name }}">{{ t.name }}</option>
+		{% endfor %}
+	</select>
+	<br/>
+    <input type="radio" name="destination" value="1">Tylko dodaj<br>
+    <input type="radio" name="destination" value="2">Dodaj i dodaj następny<br>
+	<input type="submit" value="dodaj" id="addonly"/>
+</form>
+{% endblock %}
+{% block aside %}
+    <p><a href="{% url 'buylist_add' %}">Dodaj listę</a></p>
+	<p><a href="{% url 'buylist_index' %}">Listy zakupów</a></p>
+{% endblock %}
+
+

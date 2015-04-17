@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block pagetitle %}
+	Listy zakupów
+{% endblock %}
+
+{% block title %}
+	Listy zakupów
+{% endblock %}
+
+{% block primary %}
+{% if info_message %}<p><strong>{{ info_message }}</strong></p>{% endif %}
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+	<ul>
+	{% for t in buylist_list %}
+    	<li>
+       	<p><a href="{% url 'buylist_details' t.id %}">Lista numer {{ t.id }} Priorytet: {{ t.priority }}</a></p>
+    	</li>
+	{% endfor %}
+	</ul>
+{% endblock %}
+{% block aside %}
+    <p><a href="{% url 'buylist_add' %}">Dodaj listę</a></p>
+	<p><a href="{% url 'buylist_index' %}">Listy zakupów</a></p>
+{% endblock %}

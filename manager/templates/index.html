@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block pagetitle %}Lista Zakupów{% endblock %}
+
+{% block title %}{% endblock %}
+
+{% block primary %}
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<p><span style="text-shadow: 0.1em 0.1em 0.05em #e44d26;font-size:20px;">ListaZakupow</span> -  wersja 1.1</p>
+<p>Autor: Bartosz Dempc<p/>
+
+{% endblock %}
+{% block aside %}
+    <p><a href="{% url 'buylist_add' %}">Dodaj listę</a></p>
+	<p><a href="{% url 'buylist_index' %}">Listy zakupów</a></p>
+{% endblock %}

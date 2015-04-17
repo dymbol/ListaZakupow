@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static from staticfiles %}
+{% block pagetitle %}
+	{{ list.id }}. lista zakupów
+{% endblock %}
+
+{% block title %}
+	{{ list.id }}. lista zakupów
+{% endblock %}
+
+{% block primary %}
+
+    <script type="text/javascript" src="{% static "js/vendor//jquery.center.min.js" %}"></script>
+<script type="text/javascript" src="{% static "js/vendor/jquery.msg/jquery.msg.min.js" %}"></script>
+        <link media="screen" href="{% static "js/vendor/jquery.msg/jquery.msg.css" %}" rel="stylesheet" type="text/css">
+
+	{% if info_message %}<p><strong>{{ info_message }}</strong></p>{% endif %}
+	Lista z dnia {{ list.pub_date }}
+		<br/>
+	Priorytet: {{ list.priority }}
+
+	<ol>
+		<h3>Elementy z listy:</h3>
+		{% for t in elements_list %}
+	    	<li>
+                {% if t.active == True %}
+                        <img id="buylistelement{{ t.id }}" height="32" src="{% static "img/not_buy.png" %}"/>
+				{% else %}
+					    <img id="buylistelement{{ t.id }}" height="32" src="{% static "img/buy.png" %}"/>
+				{% endif %}
+                <script>
+                    $("#buylistelement{{ t.id }}").click(function () {
+                        $("#buylistelement{{ t.id }}").attr('src', '{% static "img/wait.gif" %}');
+                        $.getJSON('{% url 'buylist_element_status_ajax' t.id %}',function (data) {
+
+                           var items = [];
+                           $.each( data, function( key, val ) {
+                                if (val == false ) {
+                                    $("#buylistelement{{ t.id }}").attr('src', '{% static "img/buy.png" %}');
+                                } else {
+                                    $("#buylistelement{{ t.id }}").attr('src', '{% static "img/not_buy.png" %}');
+                                }
+                           });
+                        });
+                    });
+                </script>
+
+				{{ t.element.name }}, {{ t.quantity }} {{ t.jednostka.name }}
+				<img height="32" src={{STATIC_URL}}element_img/{{t.element.id}}.jpg>
+                {% if t.comment %}
+                    <img id="comment{{ t.id }}" height="16" src="{% static "img/comment.png" %}"/>
+                {% else %}
+                    <img id="comment{{ t.id }}" height="16" src="{% static "img/no_comment.png" %}"/>
+                {% endif %}
+                <script>
+                    //wywołanie okna z komenatarzem dla danego elementu listy
+                    $("#comment{{ t.id }}").click(function () {
+                        $.getJSON('{% url 'buylist_element_get_comment' t.id %}',function (data) {
+                            $.each( data, function( key, val ) {
+                                if (key == "comment" ) {
+                                    $.msg({
+                                        content : "<form id='comment_form{{ t.id }}' action='{% url 'buylist_element_add_comment' t.id %}' method='POST'>{% csrf_token %} {{ t.element.name }}<br> Komentarz: <input type='text' name='comment' id='comment' value='"+val+"' /><input type='submit' value='Zapisz' /></form>",
+                                        autoUnblock : false,
+                                        clickUnblock : false
+                                    });
+
+                                    //przetwarzanie forma przez ajax
+                                    var frm = $('#comment_form{{ t.id }}');
+                                    frm.submit(function (){
+                                        $.ajax({
+                                            type: frm.attr('method'),
+                                            url: frm.attr('action'),
+                                            data: frm.serialize(),
+                                            success:function (data) {
+                                                //manualnie odblokuj ekran
+                                                $.msg('unblock', 500)
+                                            },
+                                            error: function(data) {
+                                                console.log("error sending comment")
+                                            }
+                                        });
+                                        return false;
+                                    });
+                                }
+                               });
+                        });
+                    });
+
+
+                </script>
+				<a href="{% url 'buylist_element_delete' t.id %}"><img height="16" src="{% static "img/delete.png" %}"/></a>
+	    	</li>
+		{% endfor %}
+	</ol>
+{% endblock %}
+{% block aside %}
+    <p><a href="{% url 'buylist_add' %}">Dodaj listę</a></p>
+    <p><a href="{% url 'buylist_add_elements' list.id %}">Dodaj istniejący element do listy</a></p>
+    <p><a href="{% url 'element_add' list.id %}">Stwórz element i dodaj do listy</a></p>
+	<p><a href="{% url 'buylist_delete' list.id%}">Usuń tą listę</a></p>
+
+
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block pagetitle %}
+	Lista elementów
+{% endblock %}
+
+{% block title %}
+	Lista elementów
+{% endblock %}
+
+{% block primary %}
+
+	<ul>
+	{% for t in elements_list %}
+    	<li>
+       	<p><a href="{% url 'element_details' t.id %}">{{ t.name }}</a></p>
+    	</li>
+	{% endfor %}
+	</ul>
+{% endblock %}
+{% block aside %}
+    <p><a href="{% url 'element_add' %}">Dodaj element</a></p>
+	<p><a href="{% url 'elements_index' %}">Lista elementów</a></p>
+{% endblock %}

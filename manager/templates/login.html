@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block pagetitle %}Lista Zakupów{% endblock %}
+
+{% block title %}Logowanie do aplikacji{% endblock %}
+
+{% block primary %}
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+
+
+{% endblock %}
+{% block aside %}
+    <form action="{% url 'loginuser' %}" method="post">
+	    {% csrf_token %}
+	    <input type="text" name="login" id="login" value="" placeholder="Login"/><br/>
+	    <input type="password" name="password" id="password" value="" placeholder="Hasło"/><br/>
+        <input type="submit" value="OK" />
+    </form>
+{% endblock %}

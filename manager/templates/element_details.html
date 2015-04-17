@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block pagetitle %}
+	Tumblelog
+{% endblock %}
+
+{% block title %}
+	Element - {{ element.name }}
+{% endblock %}
+
+{% block primary %}
+    {% if info_message %}<p><strong>{{ info_message }}</strong></p>{% endif %}
+	<p>Typ: {{ element.typeof }} </p>
+	<p><img src={{STATIC_URL}}/element_img/{{element.id}}.jpg></p>
+	
+</ul>
+{% endblock %}
+{% block aside %}
+	<p><a href="{% url 'element_del' element.id %}">usuń {{ element.name }}</a></p>
+	<p><a href="{% url 'element_change_img' element.id %}">zmień obrazek dla {{ element.name }}</a></p>
+{% endblock %}

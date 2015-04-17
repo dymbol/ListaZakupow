@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block pagetitle %}Lista Zakupów{% endblock %}
+
+{% block title %}Dodaj nową listę{% endblock %}
+
+{% block primary %}
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'buylist_add' %}" method="post">
+{% csrf_token %}
+Priorytet: <input type="text" name="priority" id="priority" value="1" />
+<br/>
+<input type="submit" value="dodaj" />
+</form>
+
+{% endblock %}
+{% block aside %}
+    <p><a href="{% url 'buylist_add' %}">Dodaj listę</a></p>
+	<p><a href="{% url 'buylist_index' %}">Listy zakupów</a></p>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block pagetitle %}Lista Zakupów{% endblock %}
+
+{% block title %}Dodaj element{% endblock %}
+
+{% block primary %}
+
+{% if info_message %}<p><strong>{{ info_message }}</strong></p>{% endif %}
+
+
+{% if buylist_id %}<p><strong>Element zostanie dodany do listy: {{ buylist_id }}</strong></p>
+    <form action="{% url 'element_add'  buylist_id  %}" method="post">
+{% else %}
+    <form action="{% url 'element_add' %}" method="post">
+{% endif %}
+{% csrf_token %}
+Nazwa: <input type="text" name="element" id="element" value="{{ element.name }}" />
+<br/>
+Grupa:
+<select  name="elementtype">
+{% for typ_elementu in typy_elementow %}
+	<option id="elementtype{{ forloop.counter }}" value="{{ typ_elementu.id }}">{{ typ_elementu.name }}</option>
+{% endfor %}
+
+</select>
+<br/>
+<br/>
+<input type="submit" value="dodaj" />
+</form>
+
+{% endblock %}
+{% block aside %}
+    <p><a href="{% url 'element_add' %}">Dodaj element</a></p>
+	<p><a href="{% url 'elements_index' %}">Lista elementów</a></p>
+{% endblock %}
